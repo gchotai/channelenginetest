@@ -1,8 +1,35 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model List<ChannelEngine.Core.Models.Product>
+@{
+    var stockUpdateMessage = TempData["StockUpdateMessage"] as string;
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<h1>Top 5 Products</h1>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Product Name</th>
+            <th>GTIN</th>
+            <th>Total Quantity</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var product in Model)
+        {
+            <tr>
+                <td>@product.Name</td>
+                <td>@product.Gtin</td>
+                <td>@product.TotalQuantity</td>
+            </tr>
+        }
+    </tbody>
+</table>
+<hr />
+
+<h1>Updated Product Stock</h1>
+
+@if (!string.IsNullOrEmpty(stockUpdateMessage))
+{
+    <div class="alert alert-success">
+        @stockUpdateMessage
+    </div>
+}

@@ -1,32 +1,37 @@
-using ChannelEngine.Web.Models;
+using ChannelEngine.Core.Services;
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
 
 namespace ChannelEngine.Web.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly ChannelEngineService _channelEngineService;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ChannelEngineService channelEngineService)
         {
-            _logger = logger;
+            _channelEngineService = channelEngineService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var topProducts = await _channelEngineService.GetTop5ProductsAsync();
+
+            // Action to update the stock of a product
+            if (topProducts.Count > 0)
+            {
+                int newStock = 25;
+                bool isSuccess = await _channelEngineService.UpdateStockForProductAsync(topProducts[0].MerchantProductNo, newStock);
+                if (!isSuccess)
+                {
+                    TempData["StockUpdateMessage"] = "Stock update failed.";
+                    return RedirectToAction("Index");
+                }
+                else
+                    TempData["StockUpdateMessage"] = $"Stock has been updated for '{topProducts[0].Name}' to {newStock}";
+            }
+
+            return View(topProducts);
         }
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
     }
 }
