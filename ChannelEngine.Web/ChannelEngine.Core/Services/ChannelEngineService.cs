@@ -16,12 +16,13 @@ namespace ChannelEngine.Core.Services
             var orders = await _apiClient.GetInProgressOrdersAsync();
             var products = orders
                 .SelectMany(o => o.Lines)
-                .GroupBy(l => new { l.Gtin, l.Description })
+                .GroupBy(l => new { l.Gtin, l.Description, l.MerchantProductNo })
                 .Select(g => new Product
                 {
                     Name = g.Key.Description,
                     Gtin = g.Key.Gtin,
-                    TotalQuantity = g.Sum(x => x.Quantity)
+                    TotalQuantity = g.Sum(x => x.Quantity),
+                    MerchantProductNo = g.Key.MerchantProductNo
                 })
                 .OrderByDescending(p => p.TotalQuantity)
                 .Take(5)
@@ -30,9 +31,9 @@ namespace ChannelEngine.Core.Services
             return products;
         }
 
-        public async Task UpdateStockForProductAsync(string productId)
+        public async Task<bool> UpdateStockForProductAsync(string merchantProductNo, int newStock)
         {
-            await _apiClient.UpdateProductStockAsync(productId, 25);
+            return await _apiClient.UpdateProductStockAsync(merchantProductNo, newStock);
         }
     }
 }
