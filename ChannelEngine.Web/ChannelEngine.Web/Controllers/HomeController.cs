@@ -8,7 +8,6 @@ namespace ChannelEngine.Web.Controllers
     {
         private readonly IOrderService _orderService;
         private readonly IProductService _productService;
-
         public HomeController(IOrderService orderService, IProductService productService)
         {
             _orderService = orderService;
@@ -17,21 +16,38 @@ namespace ChannelEngine.Web.Controllers
 
         public async Task<IActionResult> Index()
         {
-            // Action to get top 5 order by the total quantity sold in descending order
-            var topProducts = await _orderService.GetTop5ProductsAsync();
-
-            // Action to update the stock of a product
-            if (topProducts.Count > 0)
+            try
             {
-                int newStock = 25;
-                bool isSuccess = await _productService.UpdateStockForProductAsync(topProducts[0].MerchantProductNo, newStock);
-                if (isSuccess)
-                    TempData["StockUpdateMessage"] = $"Stock has been updated for '{topProducts[0].Name}' to {newStock}";
-                else
-                    throw new ApplicationException("Stock update failed.");
-            }
-            return View(topProducts);
+                // Action to get top 5 order by the total quantity sold in descending order
+                var topProducts = await _orderService.GetTop5ProductsAsync();
 
+                // Action to update the stock of a product
+                if (topProducts.Count > 0)
+                {
+                    int newStock = 25;
+                    await _productService.UpdateStockForProductAsync(topProducts[0].MerchantProductNo, newStock);
+                    TempData["StockUpdateMessage"] = $"Stock has been updated for '{topProducts[0].Name}' to {newStock}";
+                }
+                return View(topProducts);
+            }
+            catch (Exception ex)
+            {
+                // Optionally, set an error message in TempData or ViewData
+                TempData["ErrorMessage"] = ex.Message;
+
+                // Redirect to the Error page
+                return RedirectToAction("Error", "Home");
+            }
+
+        }
+
+        // The Error action
+        public IActionResult Error()
+        {
+            // Optionally, retrieve the error message from TempData or ViewData
+            string? errorMessage = TempData["ErrorMessage"]?.ToString();
+
+            return View(model: errorMessage);
         }
 
     }

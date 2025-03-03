@@ -9,9 +9,9 @@
             _apiClient = apiClient;
         }
 
-        public async Task<bool> UpdateStockForProductAsync(string merchantProductNo, int newStock)
+        public async Task UpdateStockForProductAsync(string merchantProductNo, int newStock)
         {
-            return await _apiClient.UpdateProductStockAsync(merchantProductNo, newStock);
+            await _apiClient.UpdateProductStockAsync(merchantProductNo, newStock);
         }
     }
 }

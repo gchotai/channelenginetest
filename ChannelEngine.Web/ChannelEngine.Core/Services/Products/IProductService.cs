@@ -2,6 +2,6 @@
 {
     public interface IProductService
     {
-        Task<bool> UpdateStockForProductAsync(string merchantProductNo, int newStock);
+        Task UpdateStockForProductAsync(string merchantProductNo, int newStock);
     }
 }

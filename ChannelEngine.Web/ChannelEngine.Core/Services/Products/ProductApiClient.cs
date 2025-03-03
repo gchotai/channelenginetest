@@ -15,7 +15,7 @@ namespace ChannelEngine.Core.Services.Products
             _settings = settings.Value; // Access the configured settings
         }
 
-        public async Task<bool> UpdateProductStockAsync(string merchantProductNo, int newStock)
+        public async Task UpdateProductStockAsync(string merchantProductNo, int newStock)
         {
             try
             {
@@ -45,7 +45,6 @@ namespace ChannelEngine.Core.Services.Products
                     var errorMessage = await response.Content.ReadAsStringAsync();
                     throw new ApplicationException($"API request failed with status {response.StatusCode}: {errorMessage}");
                 }
-                return true;
             }
             catch (HttpRequestException ex)
             {

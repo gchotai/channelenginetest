@@ -2,6 +2,6 @@
 {
     public interface IProductApiClient
     {
-        Task<bool> UpdateProductStockAsync(string productId, int newStock);
+        Task UpdateProductStockAsync(string productId, int newStock);
     }
 }
