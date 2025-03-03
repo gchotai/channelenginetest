@@ -16,9 +16,9 @@ services.Configure<ChannelEngineSettings>(configuration.GetSection("ChannelEngin
 
 // Register HttpClient and services
 services.AddHttpClient<IProductApiClient, ProductApiClient>();
-services.AddSingleton<IProductService, ProductService>();
+services.AddScoped<IProductService, ProductService>();
 services.AddHttpClient<IOrderApiClient, OrderApiClient>();
-services.AddSingleton<IOrderService, OrderService>();
+services.AddScoped<IOrderService, OrderService>();
 
 var serviceProvider = services.BuildServiceProvider();
 

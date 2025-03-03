@@ -11,9 +11,9 @@ builder.Services.AddControllersWithViews();
 builder.Services.Configure<ChannelEngineSettings>(builder.Configuration.GetSection("ChannelEngine"));
 
 // Register HttpClient and services
-builder.Services.AddSingleton<IProductService, ProductService>();
+builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddHttpClient<IProductApiClient, ProductApiClient>();
-builder.Services.AddSingleton<IOrderService, OrderService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddHttpClient<IOrderApiClient, OrderApiClient>();
 
 
