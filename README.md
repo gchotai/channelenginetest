@@ -25,6 +25,8 @@ This solution follows a **clean architecture** approach, separating concerns int
 
 ### ⚙️ Configure API Key in Web & Console App
 
+Before you run project make sure to add Api Key.
+
 Add your **API Key** to `appsettings.json`:
 
 ```json
@@ -34,7 +36,6 @@ Add your **API Key** to `appsettings.json`:
 ```
 
 Or set it in `appsettings.Development.json` for local use.
-Before you run project make sure to add Api Key.
 
 ---
 
