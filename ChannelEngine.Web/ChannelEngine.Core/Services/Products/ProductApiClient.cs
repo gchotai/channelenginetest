@@ -17,12 +17,6 @@ namespace ChannelEngine.Core.Services.Products
 
         public async Task<bool> UpdateProductStockAsync(string merchantProductNo, int newStock)
         {
-            if (string.IsNullOrWhiteSpace(merchantProductNo))
-                throw new ArgumentException("Merchant product number cannot be null or empty.", nameof(merchantProductNo));
-
-            if (newStock < 0)
-                throw new ArgumentOutOfRangeException(nameof(newStock), "Stock quantity cannot be negative.");
-
             try
             {
                 // Api call for update stock using merchantProductNo
@@ -46,7 +40,11 @@ namespace ChannelEngine.Core.Services.Products
                 // Send the PATCH request
                 var response = await _httpClient.PatchAsync(url, content);
 
-                response.EnsureSuccessStatusCode(); // Throws an exception if status is not 2xx
+                if (!response.IsSuccessStatusCode)
+                {
+                    var errorMessage = await response.Content.ReadAsStringAsync();
+                    throw new ApplicationException($"API request failed with status {response.StatusCode}: {errorMessage}");
+                }
 
                 return true;
             }

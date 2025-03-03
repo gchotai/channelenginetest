@@ -23,16 +23,15 @@ namespace ChannelEngine.Core.Services.Orders
                 var url = $"{_settings.BaseUrl}v2/orders?statuses=IN_PROGRESS&apikey={_settings.ApiKey}";
                 var response = await _httpClient.GetAsync(url);
 
-                if (response.IsSuccessStatusCode)
+                if (!response.IsSuccessStatusCode)
                 {
-                    var content = await response.Content.ReadAsStringAsync();
-                    var result = JsonSerializer.Deserialize<ApiResponse<Order>>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-                    return result?.Content ?? new List<Order>();
+                    var errorMessage = await response.Content.ReadAsStringAsync();
+                    throw new ApplicationException($"API request failed with status {response.StatusCode}: {errorMessage}");
                 }
-                else
-                {
-                    throw new ApplicationException($"Failed to fetch orders. API returned {response.StatusCode}: {await response.Content.ReadAsStringAsync()}");
-                }
+
+                var content = await response.Content.ReadAsStringAsync();
+                var result = JsonSerializer.Deserialize<ApiResponse<Order>>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                return result?.Content ?? new List<Order>();
             }
             catch (HttpRequestException ex)
             {

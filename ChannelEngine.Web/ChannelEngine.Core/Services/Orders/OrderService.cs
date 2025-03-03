@@ -13,7 +13,14 @@ namespace ChannelEngine.Core.Services.Orders
 
         public async Task<List<Product>> GetTop5ProductsAsync()
         {
+            // Fetch orders from the API client
             var orders = await _apiClient.GetInProgressOrdersAsync();
+
+            if (orders == null || !orders.Any())
+            {
+                return new List<Product>(); // Return empty list instead of null
+            }
+
             var products = orders
                 .SelectMany(o => o.Lines)
                 .GroupBy(l => new { l.Gtin, l.Description, l.MerchantProductNo })
