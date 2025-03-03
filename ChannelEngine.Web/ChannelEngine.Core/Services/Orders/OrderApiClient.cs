@@ -41,10 +41,6 @@ namespace ChannelEngine.Core.Services.Orders
             {
                 throw new ApplicationException($"Failed to serialize Json orders data.", ex);
             }
-            catch (Exception ex)
-            {
-                throw new ApplicationException($"An unexpected error occurred, Failed to get orders.", ex);
-            }
         }
     }
 }

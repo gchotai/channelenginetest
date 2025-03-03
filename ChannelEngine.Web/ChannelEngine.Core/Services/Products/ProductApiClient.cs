@@ -45,7 +45,6 @@ namespace ChannelEngine.Core.Services.Products
                     var errorMessage = await response.Content.ReadAsStringAsync();
                     throw new ApplicationException($"API request failed with status {response.StatusCode}: {errorMessage}");
                 }
-
                 return true;
             }
             catch (HttpRequestException ex)
@@ -55,10 +54,6 @@ namespace ChannelEngine.Core.Services.Products
             catch (JsonException ex)
             {
                 throw new ApplicationException($"Failed to serialize stock update payload for {merchantProductNo}.", ex);
-            }
-            catch (Exception ex)
-            {
-                throw new ApplicationException($"An unexpected error occurred, Failed to update stock {merchantProductNo}.", ex);
             }
         }
     }
