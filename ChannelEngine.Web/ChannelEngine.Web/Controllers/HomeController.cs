@@ -24,7 +24,7 @@ namespace ChannelEngine.Web.Controllers
             if (topProducts.Count > 0)
             {
                 int newStock = 25;
-                bool isSuccess = await _productService.UpdateStockForProductAsync(string.Empty, newStock); //topProducts[0].MerchantProductNo
+                bool isSuccess = await _productService.UpdateStockForProductAsync(topProducts[0].MerchantProductNo, newStock);
                 if (isSuccess)
                     TempData["StockUpdateMessage"] = $"Stock has been updated for '{topProducts[0].Name}' to {newStock}";
                 else
