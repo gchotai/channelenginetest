@@ -1,12 +1,12 @@
 ﻿using ChannelEngine.Core.Models;
 
-namespace ChannelEngine.Core.Services
+namespace ChannelEngine.Core.Services.Orders
 {
-    public class ChannelEngineService
+    public class OrderService : IOrderService
     {
-        private readonly IChannelEngineApiClient _apiClient;
+        private readonly IOrderApiClient _apiClient;
 
-        public ChannelEngineService(IChannelEngineApiClient apiClient)
+        public OrderService(IOrderApiClient apiClient)
         {
             _apiClient = apiClient;
         }
@@ -31,9 +31,5 @@ namespace ChannelEngine.Core.Services
             return products;
         }
 
-        public async Task<bool> UpdateStockForProductAsync(string merchantProductNo, int newStock)
-        {
-            return await _apiClient.UpdateProductStockAsync(merchantProductNo, newStock);
-        }
     }
 }
