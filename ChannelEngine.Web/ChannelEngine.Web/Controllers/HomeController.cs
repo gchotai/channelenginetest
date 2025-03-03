@@ -1,26 +1,29 @@
-using ChannelEngine.Core.Services;
+using ChannelEngine.Core.Services.Orders;
+using ChannelEngine.Core.Services.Products;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ChannelEngine.Web.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ChannelEngineService _channelEngineService;
+        private readonly IOrderService _orderService;
+        private readonly IProductService _productService;
 
-        public HomeController(ChannelEngineService channelEngineService)
+        public HomeController(IOrderService orderService, IProductService productService)
         {
-            _channelEngineService = channelEngineService;
+            _orderService = orderService;
+            _productService = productService;
         }
 
         public async Task<IActionResult> Index()
         {
-            var topProducts = await _channelEngineService.GetTop5ProductsAsync();
+            var topProducts = await _orderService.GetTop5ProductsAsync();
 
             // Action to update the stock of a product
             if (topProducts.Count > 0)
             {
                 int newStock = 25;
-                bool isSuccess = await _channelEngineService.UpdateStockForProductAsync(topProducts[0].MerchantProductNo, newStock);
+                bool isSuccess = await _productService.UpdateStockForProductAsync(topProducts[0].MerchantProductNo, newStock);
                 if (!isSuccess)
                 {
                     TempData["StockUpdateMessage"] = "Stock update failed.";

@@ -1,5 +1,6 @@
 ﻿using ChannelEngine.Core.Helpers;
-using ChannelEngine.Core.Services;
+using ChannelEngine.Core.Services.Orders;
+using ChannelEngine.Core.Services.Products;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -14,14 +15,16 @@ var services = new ServiceCollection();
 services.Configure<ChannelEngineSettings>(configuration.GetSection("ChannelEngine"));
 
 // Register HttpClient and services
-services.AddHttpClient<IChannelEngineApiClient, ChannelEngineApiClient>();
-services.AddSingleton<ChannelEngineService>();
+services.AddHttpClient<IProductApiClient, ProductApiClient>();
+services.AddSingleton<IProductService, ProductService>();
+services.AddHttpClient<IOrderApiClient, OrderApiClient>();
+services.AddSingleton<IOrderService, OrderService>();
 
 var serviceProvider = services.BuildServiceProvider();
 
-// Resolve and run the service
-var channelEngineService = serviceProvider.GetRequiredService<ChannelEngineService>();
-var topProducts = await channelEngineService.GetTop5ProductsAsync();
+// Run the service
+var orderService = serviceProvider.GetRequiredService<IOrderService>();
+var topProducts = await orderService.GetTop5ProductsAsync();
 
 Console.WriteLine("Top 5 Products:");
 foreach (var product in topProducts)
@@ -35,7 +38,10 @@ if (topProducts.Any())
     int newStock = 25;
     var productToUpdate = topProducts.First();
 
+    // Run the service
+    var productService = serviceProvider.GetRequiredService<IProductService>();
+
     // Update new stock using merchantProductNo  
-    await channelEngineService.UpdateStockForProductAsync(productToUpdate.MerchantProductNo, newStock);
-    Console.WriteLine($"Updated stock for {productToUpdate.Name} to {newStock}.");
+    await productService.UpdateStockForProductAsync(productToUpdate.MerchantProductNo, newStock);
+    Console.WriteLine($"Stock has been updated for {productToUpdate.Name} to {newStock}.");
 }

@@ -1,5 +1,6 @@
 using ChannelEngine.Core.Helpers;
-using ChannelEngine.Core.Services;
+using ChannelEngine.Core.Services.Orders;
+using ChannelEngine.Core.Services.Products;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,8 +11,10 @@ builder.Services.AddControllersWithViews();
 builder.Services.Configure<ChannelEngineSettings>(builder.Configuration.GetSection("ChannelEngine"));
 
 // Register HttpClient and services
-builder.Services.AddHttpClient<IChannelEngineApiClient, ChannelEngineApiClient>(); // Register HttpClient
-builder.Services.AddSingleton<ChannelEngineService>();
+builder.Services.AddSingleton<IProductService, ProductService>();
+builder.Services.AddHttpClient<IProductApiClient, ProductApiClient>();
+builder.Services.AddSingleton<IOrderService, OrderService>();
+builder.Services.AddHttpClient<IOrderApiClient, OrderApiClient>();
 
 
 var app = builder.Build();
